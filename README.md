@@ -39,6 +39,20 @@ Acesse http://localhost:3000. No primeiro acesso, entre com `ADMIN_EMAIL` / `ADM
 
 Testes: `npm test`
 
+## Colocando no ar no Render (recomendado)
+
+1. Crie uma conta em https://render.com (pode entrar com o GitHub).
+2. **New + → Blueprint**, conecte o repositório `enseada-app` e escolha o branch atual. O Render lê o `render.yaml`.
+3. Preencha as variáveis pedidas:
+   - `ADMIN_EMAIL` / `ADMIN_PASSWORD`: login do primeiro administrador.
+   - `SMTP_USER` / `SMTP_PASS` / `EMAIL_FROM`: e-mail de envio. No Gmail, ative a verificação em 2 etapas e gere uma *senha de app* em https://myaccount.google.com/apppasswords.
+4. Clique em **Apply**. Em poucos minutos o app fica no ar em `https://enseada-XXXX.onrender.com`, já com HTTPS.
+5. (Opcional) Em **Settings → Custom Domains**, aponte um domínio próprio, por exemplo `app.condominioenseada.com.br`.
+
+Custo: plano Starter (~US$ 7/mês) + disco de 1 GB (~US$ 0,25/mês). O plano gratuito **não serve**: ele apaga os dados a cada reinício e "dorme" sem uso, o que atrasaria os alertas.
+
+Alternativas: o `Dockerfile` funciona em Railway, Fly.io ou qualquer VPS. Monte um volume em `/data`.
+
 ## Colocando no ar (produção)
 
 - **HTTPS é obrigatório** para as notificações push funcionarem fora do `localhost`.

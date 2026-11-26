@@ -55,7 +55,8 @@ if (process.env.SMTP_HOST) {
   });
 }
 const EMAIL_FROM = process.env.EMAIL_FROM || `${APP_NAME} <nao-responda@enseada.local>`;
-const APP_URL = (process.env.APP_URL || '').replace(/\/$/, '');
+const APP_URL = (process.env.APP_URL || process.env.RENDER_EXTERNAL_URL
+  || (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : '')).replace(/\/$/, '');
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

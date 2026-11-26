@@ -68,6 +68,8 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
+app.get('/healthz', (_req, res) => res.send('ok'));
+
 app.get('/api/config', (_req, res) => {
   res.json({ appName: 'Condomínio Enseada', vapidPublicKey: vapidPublicKey(), roles: auth.ROLE_LABELS });
 });
