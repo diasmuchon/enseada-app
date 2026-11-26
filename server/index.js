@@ -477,7 +477,9 @@ setInterval(() => db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(ne
 
 if (require.main === module) {
   const PORT = Number(process.env.PORT || 3000);
-  app.listen(PORT, () => console.log(`Condomínio Enseada rodando em http://localhost:${PORT}`));
+  // Hospedagens como a alwaysdata informam o endereço de escuta na variável IP.
+  const HOST = process.env.IP || undefined;
+  app.listen(PORT, HOST, () => console.log(`Condomínio Enseada rodando em http://${HOST || 'localhost'}:${PORT}`));
 }
 
 module.exports = app;

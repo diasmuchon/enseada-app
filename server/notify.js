@@ -92,10 +92,10 @@ function sseHandler(req, res) {
     Connection: 'keep-alive',
     'X-Accel-Buffering': 'no',
   });
-  res.write('retry: 5000\n\n');
+  res.write('retry: 5000\nevent: ping\ndata: {}\n\n');
   const client = { res, userId: req.user.id };
   clients.add(client);
-  const ping = setInterval(() => res.write(': ping\n\n'), 25000);
+  const ping = setInterval(() => res.write('event: ping\ndata: {}\n\n'), 25000);
   req.on('close', () => { clearInterval(ping); clients.delete(client); });
 }
 

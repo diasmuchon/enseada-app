@@ -39,7 +39,49 @@ Acesse http://localhost:3000. No primeiro acesso, entre com `ADMIN_EMAIL` / `ADM
 
 Testes: `npm test`
 
-## Colocando no ar no Render (recomendado)
+## Colocando no ar de graça na alwaysdata (sem cartão)
+
+A [alwaysdata](https://www.alwaysdata.com) tem um plano gratuito permanente para uso pessoal/sem fins lucrativos, sem cartão de crédito: 1 GB de disco, HTTPS e e-mail. O app usa cerca de 10 MB.
+
+1. **Conta**: cadastre-se em alwaysdata.com, escolha o plano **Free** e um nome de conta, por exemplo `enseada`. O endereço do app será `https://enseada.alwaysdata.net`.
+2. **Node.js**: no painel, vá em *Environment → Node.js* e escolha a versão **22** (ou 24).
+3. **SSH**: em *Remote access → SSH*, defina uma senha e habilite o login por senha. Depois conecte do computador (no Windows, use o PowerShell): `ssh enseada@ssh-enseada.alwaysdata.net`
+4. **Acesso ao GitHub** (repositório privado). No SSH, rode:
+   ```bash
+   ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519 && cat ~/.ssh/id_ed25519.pub
+   ```
+   Copie a linha exibida e cole no GitHub em *Settings → Deploy keys → Add deploy key* do repositório, sem marcar escrita.
+5. **Baixar e instalar**:
+   ```bash
+   git clone -b ccr-e7744be8-1a2566 git@github.com:diasmuchon/enseada-app.git ~/enseada
+   cd ~/enseada && npm ci --omit=dev
+   ```
+6. **Site**: em *Web → Sites*, edite o site existente (ou adicione um):
+   - Tipo: **Node.js**
+   - Comando: `node --disable-warning=ExperimentalWarning server/index.js`
+   - Diretório de trabalho: `enseada`
+   - Variáveis de ambiente (uma por linha):
+     ```
+     ADMIN_EMAIL=seu@email.com
+     ADMIN_PASSWORD=uma-senha-forte
+     APP_URL=https://enseada.alwaysdata.net
+     SMTP_HOST=smtp.gmail.com
+     SMTP_PORT=587
+     SMTP_USER=condominioenseada@gmail.com
+     SMTP_PASS=senha-de-app-do-gmail
+     EMAIL_FROM=Condomínio Enseada <condominioenseada@gmail.com>
+     ```
+   - Em *Avançado*, coloque **tempo ocioso (idle time) = 0** para o app não "dormir".
+   - Na aba *SSL*, marque **Forçar HTTPS**.
+7. Abra `https://enseada.alwaysdata.net` e entre com o `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
+
+**E-mail**: no Gmail, ative a verificação em 2 etapas e gere uma *senha de app* em https://myaccount.google.com/apppasswords. Outra opção é criar um endereço `@alwaysdata.net` em *Emails* no painel e usar `SMTP_HOST=smtp-enseada.alwaysdata.net`.
+
+**Atualizar o app** depois de mudanças: `cd ~/enseada && git pull && npm ci --omit=dev`, depois reinicie o site no painel (*Web → Sites → ⟳*).
+
+**Backup**: o banco fica em `~/enseada/data/enseada.db`. A alwaysdata guarda backups de 3 dias; para ter mais, baixe esse arquivo de vez em quando (via SFTP).
+
+## Colocando no ar no Render (pago, ~US$ 7/mês)
 
 1. Crie uma conta em https://render.com (pode entrar com o GitHub).
 2. **New + → Blueprint**, conecte o repositório `enseada-app` e escolha o branch atual. O Render lê o `render.yaml`.

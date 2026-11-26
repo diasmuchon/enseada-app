@@ -188,12 +188,21 @@ async function syncPushSubscription() {
 
 // ====================== Tempo real ======================
 let events = null;
+let lastBeat = 0;
+const EVENT_KINDS = ['flood', 'garage', 'packages', 'vehicles', 'notifications'];
 function connectEvents() {
   if (events) events.close();
   events = new EventSource('/api/events');
-  const refresh = (what) => () => refreshFor(what);
-  for (const ev of ['flood', 'garage', 'packages', 'vehicles', 'notifications']) events.addEventListener(ev, refresh(ev));
+  events.addEventListener('ping', () => { lastBeat = Date.now(); });
+  for (const ev of EVENT_KINDS) events.addEventListener(ev, () => { lastBeat = Date.now(); refreshFor(ev); });
 }
+
+// Plano B: se o tempo real não estiver chegando (proxy da hospedagem segurando a conexão),
+// atualiza a tela a cada 30 segundos.
+setInterval(() => {
+  if (!state.user || document.visibilityState !== 'visible') return;
+  if (Date.now() - lastBeat > 60000) EVENT_KINDS.forEach(refreshFor);
+}, 30000);
 
 let refreshTimer = null;
 const pending = new Set();
